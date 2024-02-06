@@ -9,11 +9,11 @@ class Contact
 {
 public:
     string name;
-    vector <string> phone;
+    string phone;
     string email;
     string address;
     static vector<Contact> contacts;
-    Contact(string name, const vector <string> phone, string email, string address)
+    Contact(string name, string phone, string email, string address)
     {
         this->name = name;
         this->phone = phone;
@@ -34,24 +34,16 @@ vector<Contact> Contact::contacts;
 void Contact::create_contact()
 {
     string name, phone, email, address;
-    vector <string> phones;
+    
     cout << "Enter name: ";
     getline(cin, name);
-    char choice;
-    do
-    {
-        cout<<"Enter Phone: ";
-        getline(cin, phone);
-        phones.push_back(phone);
-        cout<<"Do you want to add another phone number? (y/n): ";
-        cin>>choice;
-        cin.ignore();
-    } while (choice=='y' || choice=='Y');
+    cout << "Enter phone: ";
+    getline(cin, phone);
     cout << "Enter email: ";
     getline(cin, email);
     cout << "Enter address: ";
     getline(cin, address);
-    Contact contact(name, phones, email, address);
+    Contact contact(name, phone, email, address);
     contacts.push_back(contact);
     cout << endl;
     cout << "Contact Created Successfully!" << endl;
@@ -75,13 +67,13 @@ void Contact::modify_contact()
             cout << endl;
             cout << "Modify Contact: " << it->name << endl;
             cout << "1. Name" << endl;
-            cout << "2. Phone " << endl;
+            cout << "2. Phone" << endl;
             cout << "3. Email" << endl;
             cout << "4. Address" << endl;
             cout << "5. Finish Modification" << endl;
             cout << "Enter your choice: ";
             cin >> modifyChoice;
-            cin.ignore();
+            cin.ignore(); // Consume the newline character left in the buffer
 
             switch (modifyChoice)
             {
@@ -90,55 +82,8 @@ void Contact::modify_contact()
                 getline(cin, it->name);
                 break;
             case 2:
-                cout << "Phone Numbers:" << endl;
-                for (size_t i = 0; i < it->phone.size(); ++i)
-                {
-                    cout << i + 1 << ". " << it->phone[i] << endl;
-                }
-                cout << "a. Add Phone Number" << endl;
-                cout << "r. Remove Phone Number" << endl;
-                cout << "Enter index to modify existing phone number: ";
-                char choice;
-                cin >> choice;
-                cin.ignore();
-                if (isdigit(choice))
-                {
-                    int index = choice - '0';
-                    if (index >= 1 && index <= it->phone.size())
-                    {
-                        cout << "Enter new phone number: ";
-                        getline(cin, it->phone[index - 1]);
-                    } else
-                    {
-                        cout << "Invalid index!" << endl;
-                    }
-                }
-                else if (choice == 'a' || choice == 'A')
-                {
-                    cout << "Enter new phone number: ";
-                    string newPhone;
-                    getline(cin, newPhone);
-                    it->phone.push_back(newPhone);
-                }
-                else if (choice == 'r' || choice == 'R')
-                {
-                    cout << "Enter index to remove phone number: ";
-                    int index;
-                    cin >> index;
-                    cin.ignore();
-                    if (index >= 1 && index <= it->phone.size())
-                    {
-                        it->phone.erase(it->phone.begin() + index - 1);
-                    }
-                    else
-                    {
-                        cout << "Invalid index!" << endl;
-                    }
-                }
-                else
-                {
-                    cout << "Invalid choice!" << endl;
-                }
+                cout << "Enter new phone: ";
+                getline(cin, it->phone);
                 break;
             case 3:
                 cout << "Enter new email: ";
@@ -169,7 +114,9 @@ void Contact::delete_contact()
     cout << "Enter the name of the contact you want to delete: ";
     getline(cin, name);
 
-    vector<Contact>::iterator it = find_if(contacts.begin(), contacts.end(), [name](const Contact &c){return c.name == name;});
+    vector<Contact>::iterator it = find_if(contacts.begin(), contacts.end(), [name](const Contact &c) {
+        return c.name == name;
+    });
 
     if (it != contacts.end())
     {
@@ -186,61 +133,57 @@ void Contact::delete_contact()
 void Contact::search_contact()
 {
     string name;
-    cout << "Enter the name you want to search: ";
+    cout<<"Enter the name you want to search: ";
     getline(cin, name);
-    bool found = false;
-    for (int i = 0; i < contacts.size(); i++)
+    bool found=false;
+    for(int i=0;i<contacts.size();i++)
     {
-        if (contacts[i].name == name)
+        if(contacts[i].name==name)
         {
             cout << "--------------------------------------" << endl;
-            cout << "Name: " << contacts[i].name << endl;
-            cout << "Phone Numbers:" << endl;
-            for (const string &phoneNumber : contacts[i].phone)
-            {
-                cout << phoneNumber << endl;
-            }
-            cout << "Email: " << contacts[i].email << endl;
-            cout << "Address: " << contacts[i].address << endl;
+            cout<<"Name: "<<contacts[i].name<<endl;
+            cout<<"Phone: "<<contacts[i].phone<<endl;
+            cout<<"Email: "<<contacts[i].email<<endl;
+            cout<<"Address: "<<contacts[i].address<<endl;
             cout << "--------------------------------------" << endl;
-            found = true;
-            //break;
+            found=true;
+            break;
         }
     }
-    if (!found)
-    {
-        cout << endl;
-        cout << "Contact not Found!" << endl;
-    }
+    if(!found)
+        {
+            cout<<endl;
+            cout<<"Contact not Found!"<<endl;
+        }
 }
 
 void Contact::display_contact()
 {
     if (contacts.size() == 0)
     {
-        cout << endl << "No Contacts Found!" << endl;
+        cout << endl;
+        cout << endl<<"No Contacts Found!" << endl;
     }
     else
     {
-        sort(contacts.begin(), contacts.end(), [](const Contact &a, const Contact &b) {return a.name < b.name;});
+        sort(contacts.begin(), contacts.end(), [](const Contact &a, const Contact &b) {
+            return a.name < b.name;
+        });
         cout << "======================================" << endl;
         cout << "Contacts List:" << endl;
         cout << "======================================" << endl;
 
         for (const Contact &contact : contacts)
         {
-            cout << "Name: " << contact.name << endl;
-            cout << "Phone Numbers:" << endl;
-            for (const string &phoneNumber : contact.phone)
-            {
-                cout << "  - " << phoneNumber << endl;
-            }
-            cout << "Email: " << contact.email << endl;
+            cout << "Name:    " << contact.name << endl;
+            cout << "Phone:   " << contact.phone << endl;
+            cout << "Email:   " << contact.email << endl;
             cout << "Address: " << contact.address << endl;
             cout << "--------------------------------------" << endl;
         }
     }
 }
+
 
 void Contact::save_contacts(const string &filename)
 {
@@ -253,20 +196,7 @@ void Contact::save_contacts(const string &filename)
 
     for (const Contact &contact : contacts)
     {
-        vector<string> contactData;
-        contactData.push_back(contact.name);
-        for (const string &phoneNumber : contact.phone)
-        {
-            contactData.push_back(phoneNumber);
-        }
-        contactData.push_back(contact.email);
-        contactData.push_back(contact.address);
-
-        for (const string &data : contactData)
-        {
-            outFile << data << ',';
-        }
-        outFile << '\n';
+        outFile << contact.name << ',' << contact.phone << ',' << contact.email << ',' << contact.address << '\n';
     }
 
     outFile.close();
@@ -294,21 +224,11 @@ void Contact::load_contacts(const string &filename)
         if (pos1 != string::npos && pos2 != string::npos && pos3 != string::npos)
         {
             string name = line.substr(0, pos1);
-            string phoneStr = line.substr(pos1 + 1, pos2 - pos1 - 1);
+            string phone = line.substr(pos1 + 1, pos2 - pos1 - 1);
             string email = line.substr(pos2 + 1, pos3 - pos2 - 1);
             string address = line.substr(pos3 + 1);
-            
-            vector<string> phones;
-            size_t prevPos = 0;
-            size_t commaPos;
-            while ((commaPos = phoneStr.find(',', prevPos)) != string::npos)
-            {
-                phones.push_back(phoneStr.substr(prevPos, commaPos - prevPos));
-                prevPos = commaPos + 1;
-            }
-            phones.push_back(phoneStr.substr(prevPos));
 
-            Contact contact(name, phones, email, address);
+            Contact contact(name, phone, email, address);
             contacts.push_back(contact);
         }
     }
@@ -320,7 +240,7 @@ void Contact::load_contacts(const string &filename)
 int main()
 {
     int choice;
-     const string filename = "contacts.csv";
+     const string filename = "contacts.txt";
     Contact::load_contacts(filename);
     do
     {
