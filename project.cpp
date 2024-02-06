@@ -156,3 +156,54 @@ void Contact::search_contact()
             cout<<"Contact not Found!"<<endl;
         }
 }
+
+int main()
+{
+    int choice;
+     const string filename = "contacts.csv";
+    Contact::load_contacts(filename);
+    do
+    {
+        cout << endl;
+        cout << "Welcome to Contact Management System!" << endl;
+        cout << endl;
+        cout << "1. Create Contact" << endl;
+        cout << "2. Modify Contact" << endl;
+        cout << "3. Delete Contact" << endl;
+        cout << "4. Search Contact" << endl;
+        cout << "5. Display Contact" << endl;
+        cout << "6. Exit" << endl;
+        cout << "Enter your Choice: ";
+        cin >> choice;
+        switch (choice)
+        {
+        case 1:
+            cin.ignore();
+            Contact::create_contact();
+            break;
+        case 2:
+            cin.ignore();
+            Contact::modify_contact();
+            break;
+        case 3:
+            cin.ignore();
+            Contact::delete_contact();
+            break;
+        case 4:
+            cin.ignore();
+            Contact::search_contact();
+            break;
+        case 5:
+            Contact::display_contact();
+            break;
+        case 6:
+            Contact::save_contacts(filename);
+            cout << "Exiting the Program..." << endl;
+            exit(0);
+        default:
+            cout << "Invalid Choice!" << endl;
+            break;
+        }
+    } while (choice != 6);
+    return 0;
+}
